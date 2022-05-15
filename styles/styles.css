@@ -176,7 +176,7 @@ section {
   height: 90%;
   width: 68%;
   margin-left: 15rem;
-  background-color: var(--color-white2);
+  background-color: var(--color-black);
   transition: all 0.4s ease-in-out;
 }
 .header-content .left-header .image img {
