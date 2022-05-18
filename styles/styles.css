@@ -555,7 +555,7 @@ section {
 }
 
 .contact-content-con {
-  display: flex;
+  display: block;
   padding-top: 3.5rem;
 }
 .contact-content-con .left-contact {
@@ -575,10 +575,12 @@ section {
   align-items: center;
   justify-content: space-between;
 }
-.contact-content-con .left-contact .contact-info .contact-item p {
-  margin: 0.3rem 0 !important;
-  padding: 0 !important;
-}
+ .contact-content-con .left-contact .contact-info .contact-item p {
+/*   margin: 0.3rem 0 !important;
+  padding: 0 !important; */
+  text-align: left;
+
+} 
 .contact-content-con .left-contact .contact-info .contact-item .icon {
   display: grid;
   grid-template-columns: 40px 1fr;
