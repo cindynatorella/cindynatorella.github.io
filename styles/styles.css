@@ -176,12 +176,12 @@ section {
   height: 90%;
   width: 68%;
   margin-left: 15rem;
-  background-color: var(--color-white2);
+  background-color: var(--color-black);
   transition: all 0.4s ease-in-out;
 }
 .header-content .left-header .image img {
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
   object-fit: cover;
   transition: all 0.4s ease-in-out;
   filter: grayscale(0);
@@ -309,23 +309,52 @@ section {
   transition: all 0.4s ease-in-out;
   width: 60%;
 }
-.about-stats .progress-bars .progress-bar .progress-con .progress .html {
-  width: 80%;
+.about-stats .progress-bars .progress-bar .progress-con .progress .cinq {
+  width: 5%;
 }
-.about-stats .progress-bars .progress-bar .progress-con .progress .css {
-  width: 95%;
+.about-stats .progress-bars .progress-bar .progress-con .progress .dix {
+  width: 10%;
 }
-.about-stats .progress-bars .progress-bar .progress-con .progress .js {
-  width: 75%;
+.about-stats .progress-bars .progress-bar .progress-con .progress .quinze {
+  width: 15%;
 }
-.about-stats .progress-bars .progress-bar .progress-con .progress .react {
+.about-stats .progress-bars .progress-bar .progress-con .progress .twenty {
+  width: 20%;
+}
+.about-stats .progress-bars .progress-bar .progress-con .progress .twentyFive {
+  width: 25%;
+}
+
+.about-stats .progress-bars .progress-bar .progress-con .progress .trenteCinq {
+  width: 35%;
+}
+.about-stats .progress-bars .progress-bar .progress-con .progress .fourty {
+  width: 40%;
+}
+
+.about-stats .progress-bars .progress-bar .progress-con .progress .fifty {
+  width: 50%;
+}
+
+.about-stats .progress-bars .progress-bar .progress-con .progress .soixante {
   width: 60%;
 }
-.about-stats .progress-bars .progress-bar .progress-con .progress .node {
-  width: 87%;
-}
-.about-stats .progress-bars .progress-bar .progress-con .progress .python {
+.about-stats .progress-bars .progress-bar .progress-con .progress .soixanteDix {
   width: 70%;
+}
+.about-stats .progress-bars .progress-bar .progress-con .progress .soixanteQuinze {
+  width: 75%;
+}
+.about-stats .progress-bars .progress-bar .progress-con .progress .eighty {
+  width: 80%;
+}
+
+.about-stats .progress-bars .progress-bar .progress-con .progress .ninety {
+  width: 90%;
+}
+
+.about-stats .progress-bars .progress-bar .progress-con .progress .ninetyFive {
+  width: 95%;
 }
 
 .stat-title {
@@ -348,14 +377,17 @@ section {
 
 /*Timeline*/
 .timeline {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: block;
+  /*grid-template-columns: repeat(2, 1fr);*/
   grid-gap: 2rem;
   padding-bottom: 3rem;
+  align-items: center;
 }
 .timeline .timeline-item {
   position: relative;
   padding-left: 3rem;
+  padding-top: 1rem;
+  align-items: center;
   border-left: 1px solid var(--color-grey-5);
 }
 .timeline .timeline-item .tl-icon {
@@ -377,7 +409,7 @@ section {
   padding: 0.2rem 0.6rem;
   background-color: var(--color-grey-5);
   border-radius: 15px;
-  display: inline-block;
+  display: block;
   font-size: 0.8rem;
   text-transform: uppercase;
   font-weight: 500;
@@ -496,7 +528,19 @@ section {
   transform: scale(1.1);
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
 }
+.blogs .blog a {
+  width: 100%;
+}
 .blogs .blog img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  filter: grayscale(100%);
+  transition: all 0.4s ease-in-out;
+}
+.blogs .blog a img {
   width: 100%;
   height: 300px;
   object-fit: cover;
@@ -526,7 +570,7 @@ section {
 }
 
 .contact-content-con {
-  display: flex;
+  display: block;
   padding-top: 3.5rem;
 }
 .contact-content-con .left-contact {
@@ -544,12 +588,15 @@ section {
 .contact-content-con .left-contact .contact-info .contact-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
+  justify-content: flex-start;
 }
-.contact-content-con .left-contact .contact-info .contact-item p {
-  margin: 0.3rem 0 !important;
-  padding: 0 !important;
-}
+ .contact-content-con .left-contact .contact-info .contact-item p {
+/*   margin: 0.3rem 0 !important;
+  padding: 0 !important; */
+  text-align: left;
+
+} 
 .contact-content-con .left-contact .contact-info .contact-item .icon {
   display: grid;
   grid-template-columns: 40px 1fr;
