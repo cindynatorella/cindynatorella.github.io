@@ -30,6 +30,30 @@
         : "https://portfolio-chat-api.onrender.com";
     const chatConversation = [];
     let chatApiReady = false;
+    let useDemoFallback = false;
+
+    const demoReplies = [
+        {
+            matches: ["ai", "machine learning", "computer vision", "nlp", "automation", "agent"],
+            reply: "Cindy builds applied AI and automation workflows, including computer vision, NLP, machine learning, and agentic engineering pipelines."
+        },
+        {
+            matches: ["recent", "moko", "current", "now"],
+            reply: "Cindy is currently a Senior Software Engineer at Moko Studio, building production systems, developer tooling, release automation, and gameplay simulation systems."
+        },
+        {
+            matches: ["backend", "java", "lender", "api", "data", "cloud"],
+            reply: "Her backend experience includes Java and Spring Boot services, REST APIs, PostgreSQL, MongoDB, Kafka, RabbitMQ, Docker, AWS, and CI/CD."
+        },
+        {
+            matches: ["game", "unity", "godot", "interactive", "project"],
+            reply: "Cindy has built interactive and educational software with Unity, C#, Godot, and GDScript, including Mornin' in Your Eyes and Virtual Pompeii."
+        },
+        {
+            matches: ["contact", "email", "location", "where"],
+            reply: "Cindy is based in Vancouver, BC. You can reach her through the Contact section, LinkedIn, or GitHub links on this site."
+        }
+    ];
 
     const addChatMessage = (text, sender) => {
         const message = document.createElement("div");
@@ -68,6 +92,12 @@
         return "I can't reach the chat service right now. Please check your connection and try again.";
     };
 
+    const getDemoReply = message => {
+        const normalizedMessage = message.toLowerCase();
+        const match = demoReplies.find(({ matches }) => matches.some(keyword => normalizedMessage.includes(keyword)));
+        return match?.reply || "The live chat is unavailable, but this demo can still share Cindy's work in AI, backend systems, interactive projects, and recent experience.";
+    };
+
     const warmChatApi = async () => {
         setChatbotStatus(useLocalApi ? "Connecting to local API..." : "Waking up chat...");
         try {
@@ -76,7 +106,8 @@
             chatApiReady = true;
             setChatbotStatus("Chat ready");
         } catch {
-            setChatbotStatus(useLocalApi ? "Local API unavailable - start Docker to enable chat" : "Chat temporarily unavailable");
+            useDemoFallback = true;
+            setChatbotStatus("Demo mode - chat service unavailable");
         }
     };
 
@@ -111,6 +142,11 @@
         addChatMessage(message, "user");
         chatbotInput.value = "";
         updateChatCharacterCount();
+
+        if (useDemoFallback) {
+            window.setTimeout(() => addChatMessage(getDemoReply(message), "bot"), 350);
+            return;
+        }
 
         if (!chatApiReady) {
             addChatMessage("The chat service is still starting. Please wait a moment and try again.", "bot");
