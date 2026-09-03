@@ -23,32 +23,13 @@
     const maxChatMessageLength = 500;
     const isLocalPage = window.location.protocol === "file:"
         || ["localhost", "127.0.0.1"].includes(window.location.hostname);
-    const chatApiBaseUrl = isLocalPage ? "http://127.0.0.1:8001" : null;
+    const useLocalApi = isLocalPage
+        && new URLSearchParams(window.location.search).get("api") === "local";
+    const chatApiBaseUrl = useLocalApi
+        ? "http://127.0.0.1:8001"
+        : "https://portfolio-chat-api.onrender.com";
     const chatConversation = [];
-    let chatApiReady = !chatApiBaseUrl;
-
-    const portfolioReplies = [
-        {
-            matches: ["ai", "machine learning", "computer vision", "nlp", "automation", "agent"],
-            reply: "Cindy builds applied AI and automation workflows, including computer vision, NLP, machine learning, and agentic engineering pipelines. Her recent work combines Python, Docker, GitHub Actions, and MCP-based tooling."
-        },
-        {
-            matches: ["recent", "moko", "current", "now"],
-            reply: "Cindy is currently a Senior Software Engineer at Moko Studio. She builds production systems, developer tooling, release automation, and gameplay simulation systems with Python, C#, Godot, PostgreSQL, Docker, and GitHub Actions."
-        },
-        {
-            matches: ["backend", "java", "lender", "api", "data", "cloud"],
-            reply: "Her backend experience includes Java and Spring Boot services, REST APIs, PostgreSQL, MongoDB, Kafka, RabbitMQ, Docker, AWS, and CI/CD. At LenderPrice, she worked on a cloud mortgage-pricing platform processing more than $20B in locked loan volume each month."
-        },
-        {
-            matches: ["game", "unity", "godot", "interactive", "project"],
-            reply: "Cindy has built interactive and educational software with Unity, C#, Godot, and GDScript. Featured work includes Mornin' in Your Eyes, Virtual Pompeii, and graph-theory puzzle games."
-        },
-        {
-            matches: ["contact", "email", "location", "where"],
-            reply: "Cindy is based in Vancouver, BC. You can reach her through the Contact section, LinkedIn, or GitHub links on this site."
-        }
-    ];
+    let chatApiReady = false;
 
     const addChatMessage = (text, sender) => {
         const message = document.createElement("div");
@@ -59,13 +40,6 @@
         message.append(paragraph);
         chatbotMessages.append(message);
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    };
-
-    const getPortfolioReply = (message) => {
-        const normalizedMessage = message.toLowerCase();
-        const match = portfolioReplies.find(({ matches }) => matches.some(keyword => normalizedMessage.includes(keyword)));
-
-        return match?.reply || "This is the frontend demo for Cindy's portfolio assistant. The future Render and Groq connection will provide richer answers; for now, try asking about AI work, backend systems, games, or recent experience.";
     };
 
     const updateChatCharacterCount = () => {
@@ -95,16 +69,14 @@
     };
 
     const warmChatApi = async () => {
-        if (!chatApiBaseUrl) return;
-
-        setChatbotStatus("Connecting to local API...");
+        setChatbotStatus(useLocalApi ? "Connecting to local API..." : "Waking up chat...");
         try {
             const response = await fetch(`${chatApiBaseUrl}/health`);
             if (!response.ok) throw new Error("Health check failed");
             chatApiReady = true;
             setChatbotStatus("Chat ready");
         } catch {
-            setChatbotStatus("Local API unavailable - start Docker to enable chat");
+            setChatbotStatus(useLocalApi ? "Local API unavailable - start Docker to enable chat" : "Chat temporarily unavailable");
         }
     };
 
@@ -140,38 +112,33 @@
         chatbotInput.value = "";
         updateChatCharacterCount();
 
-        if (chatApiBaseUrl) {
-            if (!chatApiReady) {
-                addChatMessage("The local chat service is not ready yet. Start Docker, then refresh this page.", "bot");
-                return;
-            }
-
-            chatConversation.push({ role: "user", content: message });
-            chatbotSubmitButton.disabled = true;
-            try {
-                const response = await fetch(`${chatApiBaseUrl}/chat`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ messages: chatConversation })
-                });
-                if (!response.ok) {
-                    const error = new Error("Chat request failed");
-                    error.status = response.status;
-                    throw error;
-                }
-
-                const data = await response.json();
-                chatConversation.push(data.message);
-                addChatMessage(data.message.content, "bot");
-            } catch (error) {
-                addChatMessage(getChatErrorMessage(error), "bot");
-            } finally {
-                chatbotSubmitButton.disabled = false;
-            }
+        if (!chatApiReady) {
+            addChatMessage("The chat service is still starting. Please wait a moment and try again.", "bot");
             return;
         }
 
-        window.setTimeout(() => addChatMessage(getPortfolioReply(message), "bot"), 350);
+        chatConversation.push({ role: "user", content: message });
+        chatbotSubmitButton.disabled = true;
+        try {
+            const response = await fetch(`${chatApiBaseUrl}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messages: chatConversation })
+            });
+            if (!response.ok) {
+                const error = new Error("Chat request failed");
+                error.status = response.status;
+                throw error;
+            }
+
+            const data = await response.json();
+            chatConversation.push(data.message);
+            addChatMessage(data.message.content, "bot");
+        } catch (error) {
+            addChatMessage(getChatErrorMessage(error), "bot");
+        } finally {
+            chatbotSubmitButton.disabled = false;
+        }
     });
 
     chatbotInput?.addEventListener("input", updateChatCharacterCount);
