@@ -273,6 +273,29 @@ section {
 .about-stats {
   padding-bottom: 4rem;
 }
+.skills-intro {
+  max-width: 50rem;
+  margin: 3.5rem auto 1rem;
+  text-align: center;
+  line-height: 2rem;
+  color: var(--color-grey-1);
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 58rem;
+  margin: 0 auto;
+}
+.skills-list span {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--color-grey-4);
+  border-radius: 999px;
+  color: var(--color-grey-1);
+  font-size: 0.95rem;
+}
 .about-stats .progress-bars {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
