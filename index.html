@@ -543,7 +543,7 @@
             <div>
                 <p class="chatbot-eyebrow">Portfolio assistant</p>
                 <h2>Ask Cindy's site</h2>
-                <p class="chatbot-status"><span></span> Demo mode - local answers</p>
+                <p class="chatbot-status"><span class="chatbot-status-dot" aria-hidden="true"></span><span id="chatbot-status-text">Demo mode - local answers</span></p>
             </div>
             <button class="chatbot-close" id="chatbot-close" type="button" aria-label="Close portfolio assistant">
                 <i class="fas fa-times" aria-hidden="true"></i>
@@ -551,13 +551,8 @@
         </div>
         <div class="chatbot-messages" id="chatbot-messages" role="log" aria-live="polite">
             <div class="chatbot-message chatbot-message--bot">
-                <p>Hi! I can share a quick overview of Cindy's work, projects, and technical focus. What would you like to know?</p>
+                <p>Welcome! Let's explore Cindy's work, projects, and technical world. What are you curious about?</p>
             </div>
-        </div>
-        <div class="chatbot-prompts" aria-label="Suggested questions">
-            <button type="button" data-chat-prompt="What kind of software does Cindy build?">What does Cindy build?</button>
-            <button type="button" data-chat-prompt="Tell me about Cindy's AI work.">AI work</button>
-            <button type="button" data-chat-prompt="What is Cindy's most recent experience?">Recent experience</button>
         </div>
         <form class="chatbot-form" id="chatbot-form">
             <label class="sr-only" for="chatbot-input">Ask a question about Cindy's work</label>

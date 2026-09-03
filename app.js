@@ -18,7 +18,14 @@
     const chatbotInput = document.querySelector("#chatbot-input");
     const chatbotMessages = document.querySelector("#chatbot-messages");
     const chatbotCharacterCount = document.querySelector("#chatbot-character-count");
+    const chatbotStatusText = document.querySelector("#chatbot-status-text");
+    const chatbotSubmitButton = chatbotForm?.querySelector("button[type='submit']");
     const maxChatMessageLength = 500;
+    const isLocalPage = window.location.protocol === "file:"
+        || ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    const chatApiBaseUrl = isLocalPage ? "http://127.0.0.1:8001" : null;
+    const chatConversation = [];
+    let chatApiReady = !chatApiBaseUrl;
 
     const portfolioReplies = [
         {
@@ -67,6 +74,40 @@
         chatbotCharacterCount.textContent = `${remaining} characters remaining`;
     };
 
+    const setChatbotStatus = text => {
+        if (chatbotStatusText) chatbotStatusText.textContent = text;
+    };
+
+    const getChatErrorMessage = error => {
+        const messagesByStatus = {
+            400: "Please enter a question so I can help.",
+            413: "That message is too large. Please make it shorter and try again.",
+            422: "I couldn't read that message. Please try rephrasing it.",
+            429: "You've sent a few messages quickly. Please wait a minute, then try again.",
+            500: "The chat service had a temporary problem. Please try again in a moment.",
+            502: "The chat service is temporarily unavailable. Please try again shortly.",
+            503: "The chat service is starting up. Please try again in a moment.",
+            504: "The chat service took too long to respond. Please try again."
+        };
+
+        if (error.status) return messagesByStatus[error.status] || "The chat service could not respond. Please try again.";
+        return "I can't reach the chat service right now. Please check your connection and try again.";
+    };
+
+    const warmChatApi = async () => {
+        if (!chatApiBaseUrl) return;
+
+        setChatbotStatus("Connecting to local API...");
+        try {
+            const response = await fetch(`${chatApiBaseUrl}/health`);
+            if (!response.ok) throw new Error("Health check failed");
+            chatApiReady = true;
+            setChatbotStatus("Chat ready");
+        } catch {
+            setChatbotStatus("Local API unavailable - start Docker to enable chat");
+        }
+    };
+
     const openChatbot = () => {
         chatbotPanel.hidden = false;
         chatbotToggle.setAttribute("aria-expanded", "true");
@@ -89,7 +130,7 @@
 
     chatbotClose?.addEventListener("click", closeChatbot);
 
-    chatbotForm?.addEventListener("submit", event => {
+    chatbotForm?.addEventListener("submit", async event => {
         event.preventDefault();
         const message = chatbotInput.value.trim();
 
@@ -98,17 +139,43 @@
         addChatMessage(message, "user");
         chatbotInput.value = "";
         updateChatCharacterCount();
+
+        if (chatApiBaseUrl) {
+            if (!chatApiReady) {
+                addChatMessage("The local chat service is not ready yet. Start Docker, then refresh this page.", "bot");
+                return;
+            }
+
+            chatConversation.push({ role: "user", content: message });
+            chatbotSubmitButton.disabled = true;
+            try {
+                const response = await fetch(`${chatApiBaseUrl}/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ messages: chatConversation })
+                });
+                if (!response.ok) {
+                    const error = new Error("Chat request failed");
+                    error.status = response.status;
+                    throw error;
+                }
+
+                const data = await response.json();
+                chatConversation.push(data.message);
+                addChatMessage(data.message.content, "bot");
+            } catch (error) {
+                addChatMessage(getChatErrorMessage(error), "bot");
+            } finally {
+                chatbotSubmitButton.disabled = false;
+            }
+            return;
+        }
+
         window.setTimeout(() => addChatMessage(getPortfolioReply(message), "bot"), 350);
     });
 
     chatbotInput?.addEventListener("input", updateChatCharacterCount);
-
-    document.querySelectorAll("[data-chat-prompt]").forEach(button => {
-        button.addEventListener("click", () => {
-            chatbotInput.value = button.dataset.chatPrompt;
-            chatbotForm.requestSubmit();
-        });
-    });
+    warmChatApi();
 
     document.addEventListener("keydown", event => {
         if (event.key === "Escape" && !chatbotPanel.hidden) {

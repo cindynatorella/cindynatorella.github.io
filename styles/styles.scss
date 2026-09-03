@@ -325,7 +325,7 @@ section {
     max-width: 58rem;
     margin: 0 auto;
 
-    span {
+    .chatbot-status-dot {
         padding: .55rem .9rem;
         border: 1px solid var(--color-grey-4);
         border-radius: 999px;
@@ -837,31 +837,6 @@ section {
         background: var(--color-secondary);
         color: var(--color-primary);
         border-bottom-right-radius: 3px;
-    }
-}
-
-.chatbot-prompts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .45rem;
-    padding: 0 1.25rem 1rem;
-
-    button {
-        padding: .4rem .6rem;
-        border: 1px solid var(--color-grey-4);
-        border-radius: 999px;
-        background: transparent;
-        color: var(--color-grey-2);
-        cursor: pointer;
-        font: inherit;
-        font-size: .72rem;
-
-        &:hover,
-        &:focus-visible {
-            border-color: var(--color-secondary);
-            color: var(--color-white);
-            outline: none;
-        }
     }
 }
 
