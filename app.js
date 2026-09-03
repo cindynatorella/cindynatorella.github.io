@@ -17,6 +17,8 @@
     const chatbotForm = document.querySelector("#chatbot-form");
     const chatbotInput = document.querySelector("#chatbot-input");
     const chatbotMessages = document.querySelector("#chatbot-messages");
+    const chatbotCharacterCount = document.querySelector("#chatbot-character-count");
+    const maxChatMessageLength = 500;
 
     const portfolioReplies = [
         {
@@ -59,6 +61,12 @@
         return match?.reply || "This is the frontend demo for Cindy's portfolio assistant. The future Render and Groq connection will provide richer answers; for now, try asking about AI work, backend systems, games, or recent experience.";
     };
 
+    const updateChatCharacterCount = () => {
+        if (!chatbotCharacterCount) return;
+        const remaining = maxChatMessageLength - chatbotInput.value.length;
+        chatbotCharacterCount.textContent = `${remaining} characters remaining`;
+    };
+
     const openChatbot = () => {
         chatbotPanel.hidden = false;
         chatbotToggle.setAttribute("aria-expanded", "true");
@@ -89,8 +97,11 @@
 
         addChatMessage(message, "user");
         chatbotInput.value = "";
+        updateChatCharacterCount();
         window.setTimeout(() => addChatMessage(getPortfolioReply(message), "bot"), 350);
     });
+
+    chatbotInput?.addEventListener("input", updateChatCharacterCount);
 
     document.querySelectorAll("[data-chat-prompt]").forEach(button => {
         button.addEventListener("click", () => {

@@ -867,6 +867,7 @@ section {
 
 .chatbot-form {
     display: flex;
+    flex-wrap: wrap;
     gap: .6rem;
     padding: .9rem 1.25rem 1.2rem;
     border-top: 1px solid var(--color-grey-4);
@@ -903,6 +904,14 @@ section {
             outline-offset: 2px;
         }
     }
+}
+
+.chatbot-character-count {
+    flex-basis: 100%;
+    margin: -.25rem 0 0;
+    color: var(--color-grey-3);
+    font-size: .68rem;
+    text-align: right;
 }
 
 @import './media';
