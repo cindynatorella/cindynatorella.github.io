@@ -10,6 +10,19 @@
         width: 50px;
         height: 50px;
     }
+    .chatbot-toggle {
+        left: 1rem;
+        bottom: 6.4rem;
+
+        span { display: none; }
+    }
+    .chatbot-panel {
+        left: 1rem;
+        bottom: 10rem;
+        width: calc(100vw - 2rem);
+        max-height: calc(100vh - 11rem);
+    }
+    .chatbot-messages { height: min(16rem, 34vh); }
     .header-content{
         grid-template-columns: repeat(1, 1fr);
         padding-bottom: 6rem;
