@@ -83,7 +83,7 @@
             422: "I couldn't read that message. Please try rephrasing it.",
             429: "You've sent a few messages quickly. Please wait a minute, then try again.",
             500: "The chat service had a temporary problem. Please try again in a moment.",
-            502: "The chat service is temporarily unavailable. Please try again shortly.",
+            502: "I know plenty about Cindy, but I seem to be on a coffee break. Please try me again in a moment.",
             503: "The chat service is starting up. Please try again in a moment.",
             504: "The chat service took too long to respond. Please try again."
         };
