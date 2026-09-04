@@ -21,6 +21,14 @@
     const chatbotStatusText = document.querySelector("#chatbot-status-text");
     const chatbotSubmitButton = chatbotForm?.querySelector("button[type='submit']");
     const maxChatMessageLength = 500;
+    const thinkingMessages = [
+        "Consulting the Cindy archives",
+        "Still checking. Cindy has range",
+        "Checking the fine print. There is a lot of it",
+        "Asking the portfolio very nicely",
+        "Warming up a particularly good answer",
+        "Almost there. The answer is worth it"
+    ];
     const isLocalPage = window.location.protocol === "file:"
         || ["localhost", "127.0.0.1"].includes(window.location.hostname);
     const useLocalApi = isLocalPage
@@ -64,6 +72,28 @@
         message.append(paragraph);
         chatbotMessages.append(message);
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    };
+
+    const addThinkingIndicator = () => {
+        const indicator = document.createElement("div");
+        const label = document.createElement("span");
+        const dots = document.createElement("span");
+
+        indicator.className = "chatbot-message chatbot-message--bot chatbot-message--thinking";
+        indicator.setAttribute("role", "status");
+        label.textContent = thinkingMessages[0];
+        dots.className = "chatbot-typing-dots";
+        dots.setAttribute("aria-hidden", "true");
+
+        for (let index = 0; index < 3; index += 1) {
+            dots.append(document.createElement("span"));
+        }
+
+        indicator.append(label, dots);
+        chatbotMessages.append(indicator);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+        return { indicator, label };
     };
 
     const updateChatCharacterCount = () => {
@@ -155,6 +185,12 @@
 
         chatConversation.push({ role: "user", content: message });
         chatbotSubmitButton.disabled = true;
+        const thinking = addThinkingIndicator();
+        let thinkingMessageIndex = 0;
+        const longerWaitNotice = window.setInterval(() => {
+            thinkingMessageIndex = Math.min(thinkingMessageIndex + 1, thinkingMessages.length - 1);
+            thinking.label.textContent = thinkingMessages[thinkingMessageIndex];
+        }, 3500);
         try {
             const response = await fetch(`${chatApiBaseUrl}/chat`, {
                 method: "POST",
@@ -173,6 +209,8 @@
         } catch (error) {
             addChatMessage(getChatErrorMessage(error), "bot");
         } finally {
+            window.clearTimeout(longerWaitNotice);
+            thinking.indicator.remove();
             chatbotSubmitButton.disabled = false;
         }
     });
